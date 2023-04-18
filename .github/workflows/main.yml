@@ -1,0 +1,23 @@
+name: Veracode Scan
+on: workflow_dispatch
+    
+jobs:
+  static_analysis:
+    name: Static Analysis
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Check out main branch
+        uses: actions/checkout@v2
+        
+      - name: Build with Maven
+        run: mvn -B package --file app/pom.xml
+          
+      - name: Veracode Upload And Scan
+        uses: veracode/veracode-uploadandscan-action@0.2.4
+        with:
+          appname: 'VeraDemo'
+          createprofile: false
+          filepath: 'app/target/verademo.war'
+          vid: '${{ secrets.API_ID }}'
+          vkey: '${{ secrets.API_KEY }}'
